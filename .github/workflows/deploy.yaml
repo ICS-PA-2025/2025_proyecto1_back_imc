@@ -33,8 +33,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/ICS-PA-2025/2025_proyecto1_back_imc:latest
-            ghcr.io/ICS-PA-2025/2025_proyecto1_back_imc:${{ github.sha }}
+            ghcr.io/ics-pa-2025/2025_proyecto1_back_imc:latest
+            ghcr.io/ics-pa-2025/2025_proyecto1_back_imc:${{ github.sha }}
           progress: plain
 
       # Listar imágenes locales para verificar
@@ -47,4 +47,4 @@ jobs:
         with:
           app-name: calculadora-imc-backend
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          images: ghcr.io/ICS-PA-2025/2025_proyecto1_back_imc:latest
+          images: ghcr.io/ics-pa-2025/2025_proyecto1_back_imc:latest
