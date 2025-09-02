@@ -45,6 +45,6 @@ jobs:
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
-          app-name: calculadora-imc-back
+          app-name: calculadora-imc-backend
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           images: ghcr.io/ics-pa-2025/2025_proyecto1_back_imc:latest
