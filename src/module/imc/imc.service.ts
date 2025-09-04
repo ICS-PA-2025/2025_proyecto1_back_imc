@@ -1,8 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CalcularImcDto } from './dto/calcular-imc-dto';
+import { IImcRepository } from './IImcRepository';
+import { CreateImcDto } from './dto/CreateImcDto';
 
 @Injectable()
 export class ImcService {
+  constructor(
+    @Inject('IImcRepository')
+    private readonly repository: IImcRepository,
+  ) {}
+
   calcularImc(data: CalcularImcDto): { imc: number; categoria: string } {
     const { altura, peso } = data;
     const imc = peso / (altura * altura);
@@ -18,6 +25,16 @@ export class ImcService {
     } else {
       categoria = 'Obeso';
     }
+
+    const imcDto: CreateImcDto = {
+      peso,
+      altura,
+      imc,
+      imcRedondeado,
+      categoria,
+    };
+
+    this.repository.create(imcDto);
 
     return { imc: imcRedondeado, categoria };
   }
