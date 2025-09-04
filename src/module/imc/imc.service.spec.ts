@@ -1,7 +1,6 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { ImcService } from "./imc.service";
-import { CalcularImcDto } from "./dto/calcular-imc-dto";
-
+import { Test, TestingModule } from '@nestjs/testing';
+import { ImcService } from './imc.service';
+import { CalcularImcDto } from './dto/calcular-imc-dto';
 
 describe('ImcService', () => {
   let service: ImcService;
