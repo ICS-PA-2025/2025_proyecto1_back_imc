@@ -36,7 +36,7 @@ export class ImcRepository implements IImcRepository {
     }
     return await this.repository.find({
       where,
-      order: { id: 'DESC' },
+      order: { fechahora: 'DESC' },
     });
   }
 }
