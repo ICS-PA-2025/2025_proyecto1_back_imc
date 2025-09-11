@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CalcularImcDto } from './dto/calcular-imc-dto';
 import { IImcRepository } from './IImcRepository';
 import { CreateImcDto } from './dto/CreateImcDto';
+import { ResponseImcHistoryDto } from './dto/response-imc-history.dto';
 
 @Injectable()
 export class ImcService {
@@ -37,5 +38,19 @@ export class ImcService {
     this.repository.create(imcDto);
 
     return { imc: imcRedondeado, categoria };
+  }
+
+  async findAll(): Promise<ResponseImcHistoryDto[]> {
+    const imcHistory = await this.repository.findAll();
+
+    return imcHistory.map((imc) => ({
+      id: imc.id,
+      peso: imc.peso,
+      altura: imc.altura,
+      imc: imc.imc,
+      imcRedondeado: imc.imcRedondeado,
+      categoria: imc.categoria,
+      fechahora: imc.fechahora,
+    }));
   }
 }

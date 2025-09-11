@@ -22,4 +22,16 @@ export class ImcRepository implements IImcRepository {
       );
     }
   }
+
+  async findAll(): Promise<Imc[]> {
+    try {
+      return await this.repository.find({
+        order: { id: 'DESC' },
+      });
+    } catch {
+      throw new InternalServerErrorException(
+        'Error al obtener el historial de IMC',
+      );
+    }
+  }
 }
