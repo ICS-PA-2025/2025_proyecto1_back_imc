@@ -3,7 +3,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateImcDto } from './dto/CreateImcDto';
 import { Imc } from './imc.entity';
-import { Repository } from 'typeorm';
+import { Between, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 
 @Injectable()
 export class ImcRepository implements IImcRepository {
@@ -23,15 +23,20 @@ export class ImcRepository implements IImcRepository {
     }
   }
 
-  async findAll(): Promise<Imc[]> {
-    try {
-      return await this.repository.find({
-        order: { id: 'DESC' },
-      });
-    } catch {
-      throw new InternalServerErrorException(
-        'Error al obtener el historial de IMC',
-      );
+  async findAll(startDate?: string, endDate?: string): Promise<Imc[]> {
+    const where: Record<string, unknown> = {};
+    if (startDate || endDate) {
+      if (startDate && endDate) {
+        where.fechahora = Between(new Date(startDate), new Date(endDate));
+      } else if (startDate) {
+        where.fechahora = MoreThanOrEqual(new Date(startDate));
+      } else if (endDate) {
+        where.fechahora = LessThanOrEqual(new Date(endDate));
+      }
     }
+    return await this.repository.find({
+      where,
+      order: { id: 'DESC' },
+    });
   }
 }
