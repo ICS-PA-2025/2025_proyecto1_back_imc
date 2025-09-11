@@ -20,6 +20,9 @@ export class Imc {
   @Column()
   categoria: string;
 
+  @Column()
+  fechahora: Date;
+
   constructor(
     peso: number,
     altura: number,
@@ -32,5 +35,6 @@ export class Imc {
     this.imc = imc;
     this.imcRedondeado = imcRedondeado;
     this.categoria = categoria;
+    this.fechahora = new Date();
   }
 }
