@@ -12,14 +12,7 @@ export class ImcService {
   ) {}
 
   calcularImc(data: CalcularImcDto): { imc: number; categoria: string } {
-    
     const { altura, peso } = data;
-    if (peso <= 0 || peso >= 500) {
-      throw new BadRequestException("El peso debe ser mayor a 0 y menor a 500 kg");
-    }
-    if (altura <= 0 || altura >= 3) {
-      throw new BadRequestException("La altura debe ser mayor a 0 y menor a 3 metros");
-    }
     const imc = peso / (altura * altura);
     const imcRedondeado = Math.round(imc * 100) / 100; // Dos decimales
 
