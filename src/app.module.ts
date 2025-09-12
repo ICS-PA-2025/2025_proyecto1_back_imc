@@ -4,7 +4,7 @@ import { ImcModule } from './module/imc/imc.module';
 import { AppController } from './app.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { typeOrmAsyncConfig } from '../config/database.config';
+import { typeOrmAsyncConfig } from './database/database.config';
 
 @Module({
   imports: [
