@@ -1,7 +1,7 @@
 # =========================
 # Etapa 1: Build
 # =========================
-FROM node:18 AS build-stage
+FROM node:20 AS build-stage
 
 # Establecer directorio de trabajo
 WORKDIR /app
@@ -9,8 +9,8 @@ WORKDIR /app
 # Copiar archivos de dependencias
 COPY package*.json ./
 
-# Instalar dependencias
-RUN npm install
+# Instalar dependencias (con lockfile si existe para mayor reproducibilidad)
+RUN npm ci
 
 # Copiar el resto del código fuente
 COPY . .
@@ -21,21 +21,25 @@ RUN npm run build
 # =========================
 # Etapa 2: Producción
 # =========================
-FROM node:18-alpine AS production-stage
+FROM node:20-alpine AS production-stage
 
 # Establecer directorio de trabajo
 WORKDIR /app
 
-# Copiar solo los archivos necesarios de la etapa de build
+# Copiar solo package.json + lockfile
 COPY package*.json ./
 
 # Instalar solo dependencias de producción
-RUN npm install --only=production
+RUN npm ci --omit=dev
 
 # Copiar los archivos compilados desde la etapa anterior
 COPY --from=build-stage /app/dist ./dist
 
-# Exponer el puerto (Nest usa 3000 por defecto)
+# Variables de entorno
+ENV NODE_ENV=production
+ENV PORT=3000
+
+# Exponer el puerto (Nest usa 3000 por defecto, Azure respeta PORT si está seteado)
 EXPOSE 3000
 
 # Comando de inicio
