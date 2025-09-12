@@ -8,10 +8,14 @@ import {
 } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private readonly httpService: HttpService) {}
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly configService: ConfigService,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
@@ -25,24 +29,19 @@ export class AuthGuard implements CanActivate {
 
       const token = authHeader.substring(7);
 
-      console.log('Token:', token);
-
       // Validar con microservicio
       const response = await firstValueFrom(
-        this.httpService.post(
-          'http://localhost:3001/auth/validate',
+        this.httpService.get(
+          this.configService.get<string>('AUTH_API_URL') + '/auth/validate',
           {
-            token: token,
-          },
-          {
-            timeout: 5000,
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+            timeout: 10000, // Aumentamos timeout a 10 segundos
           },
         ),
       );
-
-      console.log('llego acaaaaa');
-
-      console.log('Response from auth service:', response);
 
       // Agregar datos del usuario a la request
       request['user'] = response.data.user;
