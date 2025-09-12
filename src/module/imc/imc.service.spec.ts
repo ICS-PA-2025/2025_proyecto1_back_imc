@@ -8,8 +8,17 @@ describe('ImcService', () => {
   let service: ImcService;
 
   beforeEach(async () => {
+    const mockImcRepository = {
+      create: jest.fn(),
+    };
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ImcService],
+      providers: [
+        ImcService,
+        {
+          provide: 'IImcRepository',
+          useValue: mockImcRepository,
+        },
+      ],
     }).compile();
 
     service = module.get<ImcService>(ImcService);
