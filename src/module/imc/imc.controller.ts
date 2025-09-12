@@ -10,7 +10,7 @@ import {
 import { ImcService } from './imc.service';
 import { CalcularImcDto } from './dto/calcular-imc-dto';
 import { ResponseImcHistoryDto } from './dto/response-imc-history.dto';
-import { AuthGuard } from '../../auth/auth.guard';
+import { AuthGuard } from '../../common/guards/auth.guard';
 
 @Controller('imc')
 @UseGuards(AuthGuard)
