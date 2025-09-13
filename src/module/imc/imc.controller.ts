@@ -11,6 +11,7 @@ import { ImcService } from './imc.service';
 import { CalcularImcDto } from './dto/calcular-imc-dto';
 import { ResponseImcHistoryDto } from './dto/response-imc-history.dto';
 import { AuthGuard } from '../../common/guards/auth.guard';
+import { UserId } from '../../common/decorators/user-id.decorator';
 
 @Controller('imc')
 @UseGuards(AuthGuard)
@@ -26,8 +27,11 @@ export class ImcController {
   }
 
   @Post('calcular')
-  calcular(@Body(ValidationPipe) data: CalcularImcDto) {
+  calcular(
+    @Body(ValidationPipe) data: CalcularImcDto,
+    @UserId() userId: string,
+  ) {
     console.log(data);
-    return this.imcService.calcularImc(data);
+    return this.imcService.calcularImc(data, userId);
   }
 }

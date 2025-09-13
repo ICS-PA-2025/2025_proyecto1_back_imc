@@ -11,7 +11,10 @@ export class ImcService {
     private readonly repository: IImcRepository,
   ) {}
 
-  calcularImc(data: CalcularImcDto): { imc: number; categoria: string } {
+  calcularImc(
+    data: CalcularImcDto,
+    userId: string,
+  ): { imc: number; categoria: string } {
     const { altura, peso } = data;
     const imc = peso / (altura * altura);
     const imcRedondeado = Math.round(imc * 100) / 100; // Dos decimales
@@ -33,6 +36,7 @@ export class ImcService {
       imc,
       imcRedondeado,
       categoria,
+      userId,
     };
 
     this.repository.create(imcDto);
