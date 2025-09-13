@@ -4,4 +4,5 @@ export class CreateImcDto {
   imc: number;
   imcRedondeado: number;
   categoria: string;
+  userId: string;
 }
