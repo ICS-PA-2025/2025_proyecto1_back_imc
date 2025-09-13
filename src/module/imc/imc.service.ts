@@ -45,10 +45,15 @@ export class ImcService {
   }
 
   async findAll(
+    userId: string,
     startDate?: string,
     endDate?: string,
   ): Promise<ResponseImcHistoryDto[]> {
-    const imcHistory = await this.repository.findAll(startDate, endDate);
+    const imcHistory = await this.repository.findAll(
+      userId,
+      startDate,
+      endDate,
+    );
     return imcHistory.map((imc) => ({
       id: imc.id,
       peso: imc.peso,

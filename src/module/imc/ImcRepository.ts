@@ -23,8 +23,13 @@ export class ImcRepository implements IImcRepository {
     }
   }
 
-  async findAll(startDate?: string, endDate?: string): Promise<Imc[]> {
-    const where: Record<string, unknown> = {};
+  async findAll(
+    userId: string,
+    startDate?: string,
+    endDate?: string,
+  ): Promise<Imc[]> {
+    const where: Record<string, unknown> = { userId }; // Always filter by userId
+
     if (startDate || endDate) {
       if (startDate && endDate) {
         where.fechahora = Between(new Date(startDate), new Date(endDate));
@@ -34,6 +39,7 @@ export class ImcRepository implements IImcRepository {
         where.fechahora = LessThanOrEqual(new Date(endDate));
       }
     }
+
     return await this.repository.find({
       where,
       order: { fechahora: 'DESC' },

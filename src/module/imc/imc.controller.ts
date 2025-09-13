@@ -20,10 +20,11 @@ export class ImcController {
 
   @Get()
   async findAll(
+    @UserId() userId: string,
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
   ): Promise<ResponseImcHistoryDto[]> {
-    return await this.imcService.findAll(startDate, endDate);
+    return await this.imcService.findAll(userId, startDate, endDate);
   }
 
   @Post('calcular')
