@@ -11,7 +11,7 @@ export class ImcService {
     private readonly repository: IImcRepository,
   ) {}
 
-  calcularImc(data: CalcularImcDto): { imc: number; categoria: string } {
+  async calcularImc(data: CalcularImcDto): Promise<{ imc: number; categoria: string }> {
     const { altura, peso } = data;
       // Validaciones explícitas para los tests
       if (peso <= 0 || peso >= 500) {
@@ -43,9 +43,8 @@ export class ImcService {
       categoria,
     };
 
-    this.repository.create(imcDto);
-
-    return { imc: imcRedondeado, categoria };
+  await this.repository.create(imcDto);
+  return { imc: imcRedondeado, categoria };
   }
 
   async findAll(
