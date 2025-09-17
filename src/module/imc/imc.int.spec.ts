@@ -19,7 +19,7 @@ describe('ImcService (integración, MySQL real)', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRoot({
-          type: 'mysql',
+          type: 'postgres',
           host: process.env.DB_HOST,
           port: Number(process.env.DB_PORT),
           username: process.env.DB_USERNAME,
@@ -28,6 +28,7 @@ describe('ImcService (integración, MySQL real)', () => {
           entities: [Imc],
           synchronize: true,
           dropSchema: true,
+          ssl: { rejectUnauthorized: false },
         }),
         TypeOrmModule.forFeature([Imc]),
       ],
