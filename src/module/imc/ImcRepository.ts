@@ -45,4 +45,7 @@ export class ImcRepository implements IImcRepository {
       order: { fechahora: 'DESC' },
     });
   }
+  async clear(): Promise<void> {
+    await this.repository.clear();
+  }
 }

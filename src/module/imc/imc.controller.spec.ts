@@ -33,7 +33,7 @@ describe('ImcController', () => {
     const dto: CalcularImcDto = { altura: 1.75, peso: 70 };
     jest
       .spyOn(service, 'calcularImc')
-      .mockReturnValue({ imc: 22.86, categoria: 'Normal' });
+      .mockResolvedValue({ imc: 22.86, categoria: 'Normal' });
 
     const result = await controller.calcular(dto);
     expect(result).toEqual({ imc: 22.86, categoria: 'Normal' });

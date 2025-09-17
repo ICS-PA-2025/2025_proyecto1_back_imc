@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, BadRequestException } from '@nestjs/common';
 import { CalcularImcDto } from './dto/calcular-imc-dto';
 import { IImcRepository } from './IImcRepository';
 import { CreateImcDto } from './dto/CreateImcDto';
@@ -11,13 +11,21 @@ export class ImcService {
     private readonly repository: IImcRepository,
   ) {}
 
-  calcularImc(
+  async calcularImc(
     data: CalcularImcDto,
     userId: string,
-  ): { imc: number; categoria: string } {
+  ): Promise<{ imc: number; categoria: string }> {
     const { altura, peso } = data;
-    const imc = peso / (altura * altura);
-    const imcRedondeado = Math.round(imc * 100) / 100; // Dos decimales
+      // Validaciones explícitas para los tests
+      if (peso <= 0 || peso >= 500) {
+        throw new BadRequestException('El peso debe ser mayor a 0 y menor a 500 kg');
+      }
+      if (altura <= 0 || altura >= 3) {
+        throw new BadRequestException('La altura debe ser mayor a 0 y menor a 3 metros');
+      }
+
+      const imc = peso / (altura * altura);
+      const imcRedondeado = Math.round(imc * 100) / 100;
 
     let categoria: string;
     if (imc < 18.5) {
@@ -39,9 +47,8 @@ export class ImcService {
       userId,
     };
 
-    this.repository.create(imcDto);
-
-    return { imc: imcRedondeado, categoria };
+  await this.repository.create(imcDto);
+  return { imc: imcRedondeado, categoria };
   }
 
   async findAll(
