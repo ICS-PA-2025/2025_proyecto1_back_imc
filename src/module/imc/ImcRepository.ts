@@ -16,7 +16,7 @@ export class ImcRepository implements IImcRepository {
     try {
       const nuevo = this.repository.create(data);
       return await this.repository.save(nuevo);
-    } catch {
+    } catch (error) {
       throw new InternalServerErrorException(
         'Error al crear el registro de IMC',
       );

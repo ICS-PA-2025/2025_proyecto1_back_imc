@@ -3,9 +3,7 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { AuthGuard } from '../src/common/guards/auth.guard';
-import { v4 as uuidv4 } from 'uuid';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigService } from '@nestjs/config';
+import { DataSource } from 'typeorm';
 
 describe('IMCController (e2e)', () => {
   jest.setTimeout(20000);
@@ -17,27 +15,11 @@ describe('IMCController (e2e)', () => {
       const moduleFixture: TestingModule = await Test.createTestingModule({
         imports: [AppModule],
       })
-      .overrideModule(TypeOrmModule.forRoot())
-      .useModule(
-        TypeOrmModule.forRoot({
-          type: 'postgres',
-          host: process.env.DB_HOST,
-          port: Number(process.env.DB_PORT),
-          username: process.env.DB_USERNAME,
-          password: process.env.DB_PASSWORD,
-          database: process.env.DB_TEST_NAME,
-          autoLoadEntities: true,
-          synchronize: true,
-          ssl: process.env.DB_SSL === 'true' 
-            ? { rejectUnauthorized: false } 
-            : false,
-        })
-      )
       .overrideGuard(AuthGuard)
       .useValue({
         canActivate: (context) => {
           const request = context.switchToHttp().getRequest();
-          request.userId = testUserId; // Mock user ID for tests
+          request.user = { userId: testUserId }; // Mock user object with userId
           return true;
         },
       })
@@ -46,6 +28,26 @@ describe('IMCController (e2e)', () => {
       app = moduleFixture.createNestApplication();
       app.useGlobalPipes(new ValidationPipe());
       await app.init();
+
+      // Obtener conexión a la base de datos y crear usuario de prueba
+      const dataSource = app.get(DataSource);
+      
+      // Crear tabla users si no existe
+      await dataSource.query(`
+        CREATE TABLE IF NOT EXISTS users (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          email VARCHAR(255) UNIQUE NOT NULL,
+          password VARCHAR(255) NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+      
+      // Insertar usuario de prueba
+      await dataSource.query(`
+        INSERT INTO users (id, email, password) 
+        VALUES ($1, $2, $3)
+        ON CONFLICT (id) DO NOTHING;
+      `, [testUserId, 'test@example.com', 'hashed_password']);
     } catch (err) {
       console.error('Error en beforeAll:', err);
       throw err;
@@ -56,8 +58,6 @@ describe('IMCController (e2e)', () => {
     if (app) {
       await app.close();
     }
-    // Restaurar variable de entorno
-    process.env.DB_NAME = 'imc_db';
   });
 
   it('/imc/calcular (POST) debe calcular IMC correctamente', async () => {
