@@ -5,6 +5,9 @@ export class Imc {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column('uuid')
+  userId: string;
+
   @Column('decimal', { precision: 5, scale: 2 })
   peso: number;
 

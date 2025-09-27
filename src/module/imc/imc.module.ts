@@ -4,9 +4,10 @@ import { ImcController } from './imc.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Imc } from './imc.entity';
 import { ImcRepository } from './ImcRepository';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Imc])],
+  imports: [TypeOrmModule.forFeature([Imc]), HttpModule],
   controllers: [ImcController],
   providers: [
     ImcService,
