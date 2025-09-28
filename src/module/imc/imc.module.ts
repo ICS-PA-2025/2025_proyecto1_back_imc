@@ -1,13 +1,16 @@
 import { Module } from '@nestjs/common';
 import { ImcService } from './imc.service';
 import { ImcController } from './imc.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Imc } from './imc.entity';
 import { ImcRepository } from './ImcRepository';
 import { HttpModule } from '@nestjs/axios';
+import { MongooseModule } from '@nestjs/mongoose';
+import { Imc, ImcSchema } from './imc.schema';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Imc]), HttpModule],
+  imports: [
+    MongooseModule.forFeature([{ name: Imc.name, schema: ImcSchema }]),
+    HttpModule
+  ],
   controllers: [ImcController],
   providers: [
     ImcService,
@@ -16,6 +19,6 @@ import { HttpModule } from '@nestjs/axios';
       useClass: ImcRepository,
     },
   ],
-  exports: [TypeOrmModule, ImcService],
+  exports: [ImcService],
 })
 export class ImcModule {}

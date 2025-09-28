@@ -1,5 +1,5 @@
 import { CreateImcDto } from './dto/CreateImcDto';
-import { Imc } from './imc.entity';
+import { Imc } from './imc.schema';
 
 export interface IImcRepository {
   create(data: CreateImcDto): Promise<Imc>;
