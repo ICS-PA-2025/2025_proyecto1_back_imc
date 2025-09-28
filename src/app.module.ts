@@ -2,16 +2,20 @@ import { Module } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ImcModule } from './module/imc/imc.module';
 import { AppController } from './app.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
-import { typeOrmAsyncConfig } from './database/database.config';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
+    MongooseModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        uri: config.get<string>('MONGO_URI'),
+      }),
+    }),
     ImcModule,
   ],
   controllers: [AppController],

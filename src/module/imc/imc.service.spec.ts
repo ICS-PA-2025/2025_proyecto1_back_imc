@@ -3,7 +3,6 @@ import { ImcService } from './imc.service';
 import { CalcularImcDto } from './dto/calcular-imc-dto';
 import { BadRequestException } from '@nestjs/common';
 
-
 describe('ImcService', () => {
   let service: ImcService;
   let mockImcRepository: any;
@@ -63,14 +62,14 @@ describe('ImcService', () => {
 
     // Casos inválidos (validaciones)
     it('debería lanzar error si el peso es <= 0', async () => {
-      const dto: CalcularImcDto = { altura: 1.70, peso: 0 };
+      const dto: CalcularImcDto = { altura: 1.7, peso: 0 };
       await expect(service.calcularImc(dto, '1')).rejects.toThrow(
         new BadRequestException('El peso debe ser mayor a 0 y menor a 500 kg'),
       );
     });
 
     it('debería lanzar error si el peso es >= 500', async () => {
-      const dto: CalcularImcDto = { altura: 1.70, peso: 500 };
+      const dto: CalcularImcDto = { altura: 1.7, peso: 500 };
       await expect(service.calcularImc(dto, '1')).rejects.toThrow(
         new BadRequestException('El peso debe ser mayor a 0 y menor a 500 kg'),
       );
@@ -79,14 +78,18 @@ describe('ImcService', () => {
     it('debería lanzar error si la altura es <= 0', async () => {
       const dto: CalcularImcDto = { altura: 0, peso: 70 };
       await expect(service.calcularImc(dto, '1')).rejects.toThrow(
-        new BadRequestException('La altura debe ser mayor a 0 y menor a 3 metros'),
+        new BadRequestException(
+          'La altura debe ser mayor a 0 y menor a 3 metros',
+        ),
       );
     });
 
     it('debería lanzar error si la altura es >= 3', async () => {
       const dto: CalcularImcDto = { altura: 3, peso: 70 };
       await expect(service.calcularImc(dto, '1')).rejects.toThrow(
-        new BadRequestException('La altura debe ser mayor a 0 y menor a 3 metros'),
+        new BadRequestException(
+          'La altura debe ser mayor a 0 y menor a 3 metros',
+        ),
       );
     });
   });
@@ -115,7 +118,9 @@ describe('ImcService', () => {
       ];
       mockImcRepository.findAll.mockResolvedValue(mockImcList);
 
-      const result = await service.findAll('123e4567-e89b-12d3-a456-426614174000');
+      const result = await service.findAll(
+        '123e4567-e89b-12d3-a456-426614174000',
+      );
       expect(result).toEqual([
         {
           id: 1,
@@ -136,31 +141,35 @@ describe('ImcService', () => {
           fechahora: new Date('2025-09-11T10:00:00Z'),
         },
       ]);
-      expect(mockImcRepository.findAll).toHaveBeenCalledWith('123e4567-e89b-12d3-a456-426614174000', undefined, undefined);
+      expect(mockImcRepository.findAll).toHaveBeenCalledWith(
+        '123e4567-e89b-12d3-a456-426614174000',
+        undefined,
+        undefined,
+      );
     });
   });
   // Tests integrales para probar las catergorias de IMC
-    it('debería devolver "Bajo peso" si IMC < 18.5', async () => {
-      const result = await service.calcularImc({ peso: 50, altura: 1.80 }, '1'); // IMC ~15.43
-      expect(result).toEqual({ imc: 15.43, categoria: 'Bajo peso' });
-      expect(mockImcRepository.create).toHaveBeenCalled();
-    });
+  it('debería devolver "Bajo peso" si IMC < 18.5', async () => {
+    const result = await service.calcularImc({ peso: 50, altura: 1.8 }, '1'); // IMC ~15.43
+    expect(result).toEqual({ imc: 15.43, categoria: 'Bajo peso' });
+    expect(mockImcRepository.create).toHaveBeenCalled();
+  });
 
-    it('debería devolver "Normal" si 18.5 ≤ IMC < 25', async () => {
-      const result = await service.calcularImc({ peso: 70, altura: 1.75 }, '1'); // IMC ~22.86
-      expect(result).toEqual({ imc: 22.86, categoria: 'Normal' });
-      expect(mockImcRepository.create).toHaveBeenCalled();
-    });
+  it('debería devolver "Normal" si 18.5 ≤ IMC < 25', async () => {
+    const result = await service.calcularImc({ peso: 70, altura: 1.75 }, '1'); // IMC ~22.86
+    expect(result).toEqual({ imc: 22.86, categoria: 'Normal' });
+    expect(mockImcRepository.create).toHaveBeenCalled();
+  });
 
-    it('debería devolver "Sobrepeso" si 25 ≤ IMC < 30', async () => {
-      const result = await service.calcularImc({ peso: 85, altura: 1.75 }, '1'); // IMC ~27.76
-      expect(result).toEqual({ imc: 27.76, categoria: 'Sobrepeso' });
-      expect(mockImcRepository.create).toHaveBeenCalled();
-    });
+  it('debería devolver "Sobrepeso" si 25 ≤ IMC < 30', async () => {
+    const result = await service.calcularImc({ peso: 85, altura: 1.75 }, '1'); // IMC ~27.76
+    expect(result).toEqual({ imc: 27.76, categoria: 'Sobrepeso' });
+    expect(mockImcRepository.create).toHaveBeenCalled();
+  });
 
-    it('debería devolver "Obeso" si IMC ≥ 30', async () => {
-      const result = await service.calcularImc({ peso: 110, altura: 1.75 }, '1'); // IMC ~35.92
-      expect(result).toEqual({ imc: 35.92, categoria: 'Obeso' });
-      expect(mockImcRepository.create).toHaveBeenCalled();
-    });
+  it('debería devolver "Obeso" si IMC ≥ 30', async () => {
+    const result = await service.calcularImc({ peso: 110, altura: 1.75 }, '1'); // IMC ~35.92
+    expect(result).toEqual({ imc: 35.92, categoria: 'Obeso' });
+    expect(mockImcRepository.create).toHaveBeenCalled();
+  });
 });

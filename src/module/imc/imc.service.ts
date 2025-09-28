@@ -18,10 +18,14 @@ export class ImcService {
     const { altura, peso } = data;
     // Validaciones explícitas para los tests
     if (peso <= 0 || peso >= 500) {
-      throw new BadRequestException('El peso debe ser mayor a 0 y menor a 500 kg');
+      throw new BadRequestException(
+        'El peso debe ser mayor a 0 y menor a 500 kg',
+      );
     }
     if (altura <= 0 || altura >= 3) {
-      throw new BadRequestException('La altura debe ser mayor a 0 y menor a 3 metros');
+      throw new BadRequestException(
+        'La altura debe ser mayor a 0 y menor a 3 metros',
+      );
     }
 
     const imc = peso / (altura * altura);
@@ -102,7 +106,7 @@ export class ImcService {
     const promedioPeso = pesos.length ? sumaPesos / pesos.length : 0;
     const sumaImcs = imcs.reduce((acc, n) => acc + n, 0);
     const promedioImc = imcs.length ? sumaImcs / imcs.length : 0;
-    
+
     let suma:number = 0;
     for (let index = 0; index < pesos.length; index++) {
       const element = Math.pow(pesos[index] - promedioPeso, 2);
