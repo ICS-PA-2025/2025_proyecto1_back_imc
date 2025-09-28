@@ -11,4 +11,3 @@ export class CalcularImcDto {
   @Max(500, { message: 'El peso debe ser menor a 500 kilogramos' }) // Peso máximo razonable
   peso: number;
 }
-  

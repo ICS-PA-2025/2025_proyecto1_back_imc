@@ -12,8 +12,9 @@ export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
     database: config.get<string>('DB_NAME'),
     autoLoadEntities: true,
     synchronize: true, // solo en desarrollo
-    ssl: config.get<string>('DB_SSL') === 'true' 
-      ? { rejectUnauthorized: false } 
-      : false,
+    ssl:
+      config.get<string>('DB_SSL') === 'true'
+        ? { rejectUnauthorized: false }
+        : false,
   }),
 };

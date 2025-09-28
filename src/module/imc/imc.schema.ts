@@ -6,31 +6,31 @@ export class Imc extends Document {
   @Prop({ required: true })
   userId: string;
 
-  @Prop({ 
-    required: true, 
+  @Prop({
+    required: true,
     type: Number,
-    set: (val: number) => Math.round(val * 100) / 100
+    set: (val: number) => Math.round(val * 100) / 100,
   })
   peso: number;
 
-  @Prop({ 
-    required: true, 
+  @Prop({
+    required: true,
     type: Number,
-    set: (val: number) => Math.round(val * 100) / 100
+    set: (val: number) => Math.round(val * 100) / 100,
   })
   altura: number;
 
-  @Prop({ 
-    required: true, 
+  @Prop({
+    required: true,
     type: Number,
-    set: (val: number) => Math.round(val * 100) / 100
+    set: (val: number) => Math.round(val * 100) / 100,
   })
   imc: number;
 
-  @Prop({ 
-    required: true, 
+  @Prop({
+    required: true,
     type: Number,
-    set: (val: number) => Math.round(val * 100) / 100
+    set: (val: number) => Math.round(val * 100) / 100,
   })
   imcRedondeado: number;
 

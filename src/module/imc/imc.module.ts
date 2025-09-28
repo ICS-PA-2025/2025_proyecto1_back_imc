@@ -9,7 +9,7 @@ import { Imc, ImcSchema } from './imc.schema';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Imc.name, schema: ImcSchema }]),
-    HttpModule
+    HttpModule,
   ],
   controllers: [ImcController],
   providers: [
