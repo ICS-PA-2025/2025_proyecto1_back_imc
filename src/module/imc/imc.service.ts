@@ -92,13 +92,11 @@ export class ImcService {
       return { items: [], stats: { total: 0, promedioPeso: 0, promedioImc: 0, variacionPeso: 0, variacionImc: 0 } };
     }
 
-    console.log('IMC History:', imcHistory);
 
     const pesos = imcHistory.map(item => item.peso).filter(peso => peso != null);
     const imcs = imcHistory.map(item => item.imc).filter(imc => imc != null);
 
     const sumaPesos = pesos.reduce((acc, n) => acc + n, 0);
-    console.log('Suma Pesos:', sumaPesos);
     const promedioPeso = pesos.length ? sumaPesos / pesos.length : 0;
     const sumaImcs = imcs.reduce((acc, n) => acc + n, 0);
     const promedioImc = imcs.length ? sumaImcs / imcs.length : 0;
