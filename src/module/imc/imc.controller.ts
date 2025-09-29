@@ -16,7 +16,7 @@ import { UserId } from '../../common/decorators/user-id.decorator';
 @Controller('imc')
 @UseGuards(AuthGuard)
 export class ImcController {
-  constructor(private readonly imcService: ImcService) {}
+  constructor(private readonly imcService: ImcService) { }
 
   @Get()
   async findAll(
@@ -25,6 +25,18 @@ export class ImcController {
     @Query('endDate') endDate?: string,
   ): Promise<ResponseImcHistoryDto[]> {
     return await this.imcService.findAll(userId, startDate, endDate);
+  }
+
+  @Get('stats')
+  async findAllAndStats(
+    @UserId() userId: string,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
+  ): Promise<{
+    items: ResponseImcHistoryDto[];
+    stats: { total: number; promedioPeso: number; promedioImc: number, variacionPeso: number; variacionImc: number };
+  }> {
+    return this.imcService.findAllAndStats(userId, startDate, endDate);
   }
 
   @Post('calcular')
