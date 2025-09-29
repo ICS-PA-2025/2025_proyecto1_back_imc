@@ -1,22 +1,22 @@
 import { IImcRepository } from './IImcRepository';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectModel } from '@nestjs/mongoose';
 import { CreateImcDto } from './dto/CreateImcDto';
-import { Imc } from './imc.entity';
-import { Between, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
+import { Imc } from './imc.schema';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class ImcRepository implements IImcRepository {
   constructor(
-    @InjectRepository(Imc)
-    private readonly repository: Repository<Imc>,
+    @InjectModel(Imc.name)
+    private readonly imcModel: Model<Imc>,
   ) {}
 
   async create(data: CreateImcDto): Promise<Imc> {
     try {
-      const nuevo = this.repository.create(data);
-      return await this.repository.save(nuevo);
-    } catch {
+      const nuevo = new this.imcModel(data);
+      return await nuevo.save();
+    } catch (error) {
       throw new InternalServerErrorException(
         'Error al crear el registro de IMC',
       );
@@ -28,24 +28,18 @@ export class ImcRepository implements IImcRepository {
     startDate?: string,
     endDate?: string,
   ): Promise<Imc[]> {
-    const where: Record<string, unknown> = { userId }; // Always filter by userId
+    const filter: Record<string, unknown> = { userId }; // Always filter by userId
 
     if (startDate || endDate) {
-      if (startDate && endDate) {
-        where.fechahora = Between(new Date(startDate), new Date(endDate));
-      } else if (startDate) {
-        where.fechahora = MoreThanOrEqual(new Date(startDate));
-      } else if (endDate) {
-        where.fechahora = LessThanOrEqual(new Date(endDate));
-      }
+      const dateFilter: Record<string, Date> = {};
+      if (startDate) dateFilter.$gte = new Date(startDate);
+      if (endDate) dateFilter.$lte = new Date(endDate);
+      filter.fechahora = dateFilter;
     }
 
-    return await this.repository.find({
-      where,
-      order: { fechahora: 'DESC' },
-    });
+    return await this.imcModel.find(filter).sort({ fechahora: -1 }).exec();
   }
   async clear(): Promise<void> {
-    await this.repository.clear();
+    await this.imcModel.deleteMany({}).exec();
   }
 }
