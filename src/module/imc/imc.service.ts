@@ -92,17 +92,13 @@ export class ImcService {
       return { items: [], stats: { total: 0, promedioPeso: 0, promedioImc: 0, variacionPeso: 0, variacionImc: 0 } };
     }
 
-    const tokenRegex = /\d{1,3}\.\d{2}/g;
+    console.log('IMC History:', imcHistory);
 
-    const pesos = imcHistory.flatMap(item =>
-      (String(item.peso ?? '').match(tokenRegex) || []).map(Number)
-    );
-
-    const imcs = imcHistory.flatMap(item =>
-      (String(item.imc ?? '').match(tokenRegex) || []).map(Number)
-    );
+    const pesos = imcHistory.map(item => item.peso).filter(peso => peso != null);
+    const imcs = imcHistory.map(item => item.imc).filter(imc => imc != null);
 
     const sumaPesos = pesos.reduce((acc, n) => acc + n, 0);
+    console.log('Suma Pesos:', sumaPesos);
     const promedioPeso = pesos.length ? sumaPesos / pesos.length : 0;
     const sumaImcs = imcs.reduce((acc, n) => acc + n, 0);
     const promedioImc = imcs.length ? sumaImcs / imcs.length : 0;
